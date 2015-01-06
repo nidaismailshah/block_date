@@ -1,0 +1,155 @@
+<?php
+/**
+ * @file
+ * Enhanced control over the dates of any Block.
+ *
+ * Block dates allows users to add dates to any block through the block's
+ * configuration interface. This implementation is based on date settings stored
+ * in seperate table called 'block_by_date'
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function block_by_date_permission() {
+  return array(
+    'administer block dates' => array(
+      'title' => t('Administer block dates'),
+      'description' => t('Set date limit for blocks.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter(&$form, &$form_state, $form_id).
+ * 
+ */
+function block_by_date_form_alter(&$form, &$form_state, $form_id) {
+  if (user_access('administer block dates') && ($form_id == 'block_admin_configure' || $form_id == 'block_add_block_form')) {
+    // Load statically cached block object used to display the form.
+    $block = block_load($form['module']['#value'], $form['delta']['#value']);
+
+    // Adding date fieldset to the block configure page.
+    $form['visibility']['dates_between'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Date & Time',
+      '#weight' => 30,
+      '#collapsible' => TRUE,
+      '#group' => ' visibility'
+     );
+    $form['visibility']['dates_between']['from_date'] = array(
+      '#type' => 'date_popup', 
+      '#title' => t('From Date'), 
+      '#date_format' => 'Y-m-d H:i',
+      '#date_year_range' => '-3:+3',
+      '#default_value' => isset($block->from_date) ? $block->from_date : '',
+      '#description' => t('If you specify only from date, the block will be visible on that date onwards.'),
+     );
+   
+    $form['visibility']['dates_between']['enable_end_date'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Collect End Date'),
+      '#ajax' => array(
+      'wrapper' => 'end_date_wrapper',
+      'callback' => 'bydate_form_ajax_callback',
+      'method' => 'replace',
+      'effect' => 'fade',
+      'event' => 'click'
+      ),
+      '#default_value' => '',
+      '#description' => t('E.g., Allow this block to appear on September 15, and end on September 16.'),
+     );
+     
+    $form['visibility']['dates_between']['end_date_wrapper'] = array(
+      '#prefix' => '<div id="end_date_wrapper">',
+      '#suffix' => '</div>',
+      '#markup' => '',
+     );
+  
+    if (isset($form_state['values']['enable_end_date']) && $form_state['values']['enable_end_date'] ) {
+      $form['visibility']['dates_between']['end_date_wrapper']['to_date'] = array(
+        '#type' => 'date_popup', 
+        '#title' => 'To Date',
+        '#date_format' => 'Y-m-d H:i', 
+        '#date_year_range' => '-3:+3',
+        '#default_value' => isset($block->to_date) ? $block->to_date : '',
+       );
+    }
+
+    $form['#submit'][] = 'bbd_form_submit';
+  }
+}
+
+/**
+ * Ajax callback. Returns To date filed if enable collect end date checkbox.
+ *
+ * @see block_by_date_form_alter()
+ *
+ */
+function bydate_form_ajax_callback($form, &$form_state) {
+  return $form['visibility']['dates_between']['end_date_wrapper'];
+}
+
+/**
+ * Submit callback. Saves date settings per block.
+ *
+ * @see block_by_date_form_alter()
+ *
+ */
+function bbd_form_submit($form, &$form_state) {
+  if ($form_state['values']['form_id'] == 'block_admin_configure' || $form_state['values']['form_id'] == 'block_add_block_form') {
+
+  // Conditional update.
+  if ((isset($form_state['values']['from_date']) && $form['visibility']['dates_between']['from_date']['#default_value'] != $form_state['values']['from_date'] && user_access('administer blocks')) || (isset($form_state['values']['to_date']) && $form['visibility']['dates_between']['to_date']['#default_value'] != $to_state['values']['to_date'] && user_access('administer blocks'))) {
+    db_update('block')
+        ->fields(array('from_date' => $form_state['values']['from_date'], 'to_date' => $form_state['values']['to_date']))
+        ->condition('module', $form_state['values']['module'])
+        ->condition('delta', $form_state['values']['delta'])
+        ->execute();
+    }
+  }
+}
+
+/**
+ * Implements hook_block_list_alter().
+ *
+ * Checks the date visibility settings.
+ * Removes the block if the visibility conditions are not met.
+ */
+function block_by_date_block_list_alter(&$blocks) {
+
+  foreach ($blocks as $key => $block) {
+    // Retrieve from date value from block_by_date table.
+    $bbd_result = db_select('block', 'b')
+      ->fields('b', array('from_date', 'to_date'))
+      ->condition('module', $block->module)
+      ->condition('delta', $block->delta)
+      ->execute()
+      ->fetchAssoc();
+
+    $current_date = date('Y-m-d H:i');
+    $default_value_from = $bbd_result['from_date'];
+    $default_value_to = $bbd_result['to_date'];
+    if (isset($default_value_from) && isset($default_value_to)) {
+    
+      if ((strtotime($current_date) >= strtotime($default_value_from)) && (strtotime($current_date) <= strtotime($default_value_to))) {
+        // Nothing. Block will be visible.
+         
+      }
+      else {
+        // Disabling block.
+         unset($blocks[$key]);
+      }
+    }
+    elseif (isset($default_value_from) && $default_value_to == '') {
+      if (strtotime($current_date) >= strtotime($default_value_from)) {
+        // Nothing. Block will be visible.
+      }
+    }
+    elseif ($default_value_from == '' && $default_value_to == '') {
+
+      // Nothing. Block will be visible.
+    }
+    
+  }
+}

@@ -1,1 +1,9 @@
-name = Block by date
+name = Block by Date
+description = "Enhances block visibilty settings by adding date conditions"
+core = 7.x
+
+files[] = bbd.module
+files[] = bbd.install
+
+dependencies[] = block
+dependencies[] = date

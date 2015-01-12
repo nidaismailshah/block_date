@@ -29,6 +29,7 @@ function block_by_date_uninstall() {
   foreach ($schema['block']['fields'] as $field => $specs) {
     db_drop_field('block', $field);
   }
+  db_query("DELETE FROM {variable} WHERE name LIKE 'block_date_%'");
 }
 
 /**
@@ -41,14 +42,12 @@ function block_by_date_schema_alter(&$schema) {
     $schema['block']['fields']['from_date'] = array(
       'type' => 'varchar',
       'length' => 255,
-      'not null' => TRUE,
       'default' => '',
       'description' => 'String containing the dates for the block.',
     );
     $schema['block']['fields']['to_date'] = array(
       'type' => 'varchar',
       'length' => 255,
-      'not null' => TRUE,
       'default' => '',
       'description' => 'String containing the dates for the block.',
     );

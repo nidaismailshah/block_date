@@ -155,11 +155,12 @@ function bbd_form_submit($form, &$form_state) {
  * Removes the block if the visibility conditions are not met.
  */
 function block_by_date_block_list_alter(&$blocks) {
-  foreach ($blocks as $key => $block) {      
-    $block = block_load($block->module, $block->delta);
+  foreach ($blocks as $key => $block) {
     $current_date = date('Y-m-d H:i');
     $default_value_from = $block->from_date;
     $default_value_to = $block->to_date;
+    
+    
     if (isset($default_value_from) && isset($default_value_to)) {
       if ((strtotime($current_date) >= strtotime($default_value_from)) && (strtotime($current_date) <= strtotime($default_value_to))) {
         // Nothing. Block will be visible.
@@ -169,15 +170,14 @@ function block_by_date_block_list_alter(&$blocks) {
          unset($blocks[$key]);
       }
     }
-    elseif (isset($default_value_from) && $default_value_to == '') {
+    elseif (isset($default_value_from) && empty($default_value_to)) {
       if (strtotime($current_date) >= strtotime($default_value_from)) {
         // Nothing. Block will be visible.
       }
+      else {
+        // Disabling block.
+         unset($blocks[$key]);
+      }
     }
-    elseif ($default_value_from == '' && $default_value_to == '') {
-
-      // Nothing. Block will be visible.
-    }
-    
   }
 }

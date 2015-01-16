@@ -42,7 +42,7 @@ function block_by_date_form_alter(&$form, &$form_state, $form_id) {
       '#group' => ' visibility'
      );
     $form['visibility']['dates_between']['from_date'] = array(
-      '#type' => 'date_popup', 
+      '#type' => module_exists('date_popup') ? 'date_popup' : 'date_select' ,
       '#title' => t('From Date'), 
       '#date_format' => 'Y-m-d H:i',
       '#date_year_range' => '-3:+3',
@@ -74,7 +74,7 @@ function block_by_date_form_alter(&$form, &$form_state, $form_id) {
          '#title' => 'To Date',
          '#date_format' => 'Y-m-d H:i', 
          '#date_year_range' => '-3:+3',
-         '#default_value' => $block->to_date,
+         '#default_value' => isset($block->to_date) ? $block->from_date : variable_get('block_refresh_default_automatic_from_date', BLOCK_TO_DATE_DEFAULT_INIT),
          '#required' => TRUE,
         );
      }

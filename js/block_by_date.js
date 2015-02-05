@@ -8,6 +8,12 @@
       $('fieldset#edit-dates-between', context).drupalSetSummary(function (context) {
         var vals = [];
         
+        $('#edit-from-date-timeEntry-popup-1').keydown(function(e) {  
+          if (e.keyCode == 8) {
+            $('#edit-from-date-timeEntry-popup-1').val("");
+          }
+        });
+        
         var todate_checkbox = $('input[type="checkbox"]:checked', context).val();
         if ($('#edit-from-date-datepicker-popup-0', context).val() != undefined) {
           var from_date = $('#edit-from-date-datepicker-popup-0', context).val();

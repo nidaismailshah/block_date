@@ -137,6 +137,9 @@ function block_by_date_form_submit($form, &$form_state) {
     if ($form_state['values']['from_date'] != '') {
       $dates['from_date'] = $form_state['values']['from_date'];
     }
+    else {
+      $dates['from_date'] = NULL;
+    }
     if ($form_state['values']['enable_end_date'] == 1) {
       $dates['to_date'] = $form_state['values']['to_date'];
     }

@@ -34,7 +34,7 @@ function block_by_date_permission() {
 function block_by_date_form_alter(&$form, &$form_state, $form_id) {
   if (user_access('administer block dates') && ($form_id == 'block_admin_configure' || $form_id == 'block_add_block_form')) {
 
-    // Load statically cached block object used to display the form.
+    // Load statically cached block object used to display default from and to dates.
     $block = block_load($form['module']['#value'], $form['delta']['#value']);
 
     // Adding date fieldset to the block configure page.
@@ -45,7 +45,7 @@ function block_by_date_form_alter(&$form, &$form_state, $form_id) {
       '#collapsible' => TRUE,
       '#group' => ' visibility',
       '#attached' => array(
-        'js' => array(drupal_get_path('module', 'block_by_date') . '/js/block_by_date.js'),
+        'js' => array(drupal_get_path('module', 'block_by_date') . '/block_by_date.js'),
       ),
      );
     $form['visibility']['dates_between']['from_date'] = array(
@@ -59,44 +59,27 @@ function block_by_date_form_alter(&$form, &$form_state, $form_id) {
     $form['visibility']['dates_between']['enable_end_date'] = array(
       '#type' => 'checkbox',
       '#title' => t('Collect an End Date'),
-      '#ajax' => array(
-      'wrapper' => 'end_date_wrapper',
-      'callback' => 'block_by_date_form_ajax_callback',
-      'method' => 'replace',
-      'effect' => 'fade',
-      ),
-      '#default_value' => isset($block->to_date) ? 1 : 0,
+      '#default_value' => isset($block->to_date) ? TRUE : FALSE,
       '#description' => t('E.g., Allow this block to appear on September 15, and end on September 16.'),
      );
-    $form['visibility']['dates_between']['end_date_wrapper'] = array(
-      '#prefix' => '<div id="end_date_wrapper">',
-      '#suffix' => '</div>',
+     $form['visibility']['dates_between']['to_date'] = array(
+       '#type' => module_exists('date_popup') ? 'date_popup' : 'date_select', 
+       '#title' => 'To Date',
+       '#date_format' => 'Y-m-d H:i', 
+       '#date_year_range' => '-3:+3',
+       '#default_value' => isset($block->to_date) ? $block->to_date : variable_get('block_refresh_default_automatic_from_date', BLOCK_TO_DATE_DEFAULT_INIT),
+       '#required' => TRUE,
+       '#states' => array(
+         'visible' => array(
+           ':input[name="enable_end_date"]' => array('checked' => TRUE),
+         ),
+       ),
      );
-    if ((!empty($block->to_date) && !isset($form_state['values']['enable_end_date'])) || (isset($form_state['values']['enable_end_date']) && (empty($block->to_date) && $form_state['values']['enable_end_date'] == 1) || (!empty($block->to_date) && $form_state['values']['enable_end_date'] == 1))) {
-      $form['visibility']['dates_between']['end_date_wrapper']['to_date'] = array(
-         '#type' => module_exists('date_popup') ? 'date_popup' : 'date_select', 
-         '#title' => 'To Date',
-         '#date_format' => 'Y-m-d H:i', 
-         '#date_year_range' => '-3:+3',
-         '#default_value' => isset($block->to_date) ? $block->to_date : variable_get('block_refresh_default_automatic_from_date', BLOCK_TO_DATE_DEFAULT_INIT),
-         '#required' => TRUE,
-        );        
-    
-    }
     // Add validation handler
     $form['#validate'][] = 'block_by_date_alter_validate_settings';
+    // Add submission handler
     $form['#submit'][] = 'block_by_date_form_submit';
   }
-}
-
-/**
- * Ajax callback. Returns To date filed if enable collect end date checkbox.
- *
- * @see block_by_date_form_alter()
- *
- */
-function block_by_date_form_ajax_callback($form, &$form_state) {
-  return $form['visibility']['dates_between']['end_date_wrapper'];
 }
 
 /**
@@ -146,7 +129,6 @@ function block_by_date_form_submit($form, &$form_state) {
     else {
       $dates['to_date'] = NULL;
     }
-    $dates['check_todate'] = $form_state['values']['enable_end_date'];
     db_update('block')
         ->fields($dates)
         ->condition('module', $form_state['values']['module'])

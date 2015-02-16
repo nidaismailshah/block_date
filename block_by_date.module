@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Enhanced control over the dates of any Block.
@@ -33,7 +34,7 @@ function block_by_date_permission() {
  */
 function block_by_date_form_alter(&$form, &$form_state, $form_id) {
   if (user_access('administer block dates') && ($form_id == 'block_admin_configure' || $form_id == 'block_add_block_form')) {
-    // Load statically cached block object used to display 
+    // Load statically cached block object used to display
     // default from and to dates.
     $block = block_load($form['module']['#value'], $form['delta']['#value']);
 
@@ -113,7 +114,7 @@ function block_by_date_alter_validate_settings($form, &$form_state) {
  * @see block_by_date_form_alter()
  */
 function block_by_date_form_submit($form, &$form_state) {
-  if ($form_state['values']['form_id'] == 'block_admin_configure' || $form_state['values']['form_id'] == 'block_add_block_form') {    
+  if ($form_state['values']['form_id'] == 'block_admin_configure' || $form_state['values']['form_id'] == 'block_add_block_form') {
     $dates = array();
     if ($form_state['values']['from_date'] != '') {
       $dates['from_date'] = $form_state['values']['from_date'];
@@ -145,14 +146,14 @@ function block_by_date_block_list_alter(&$blocks) {
   foreach ($blocks as $key => $block) {
     $current_date = date('Y-m-d H:i');
     $default_value_from = $block->from_date;
-    $default_value_to = $block->to_date;    
+    $default_value_to = $block->to_date;
     if (!empty($default_value_from) && !empty($default_value_to)) {
       if ((strtotime($current_date) >= strtotime($default_value_from)) && (strtotime($current_date) <= strtotime($default_value_to))) {
         // Nothing. Block will be visible.
       }
       else {
         // Disabling block.
-         unset($blocks[$key]);
+        unset($blocks[$key]);
       }
     }
     elseif (!empty($default_value_from) && empty($default_value_to)) {

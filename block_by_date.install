@@ -1,8 +1,10 @@
 <?php
+
 /**
  * @file
  * Install, update and uninstall functions for the block_class module.
  */
+
 /**
  * Implements hook_install().
  */
@@ -32,7 +34,6 @@ function block_by_date_uninstall() {
 
 /**
  * Implements hook_schema_alter().
- *
  * Other modules, such as block_class, i18n_block also 
  * modify the block database table.
  */

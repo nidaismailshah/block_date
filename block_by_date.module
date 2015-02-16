@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  * Enhanced control over the dates of any Block.
  *

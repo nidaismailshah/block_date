@@ -68,7 +68,7 @@ function block_by_date_form_alter(&$form, &$form_state, $form_id) {
        '#date_format' => 'Y-m-d H:i', 
        '#date_year_range' => '-3:+3',
        '#default_value' => isset($block->to_date) ? $block->to_date : variable_get('block_refresh_default_automatic_from_date', BLOCK_TO_DATE_DEFAULT_INIT),
-       '#required' => TRUE,
+       '#required' => (isset($form_state["values"]["enable_end_date"]) ? ($form_state["values"]["enable_end_date"] == TRUE ? TRUE : FALSE) : FALSE),
        '#states' => array(
          'visible' => array(
            ':input[name="enable_end_date"]' => array('checked' => TRUE),

@@ -5,16 +5,17 @@
  *
  * Block dates allows users to add dates to any block through the block's
  * configuration interface. This implementation is based on date settings stored
- * in seperate table called 'block_by_date'
+ * in separate table called 'block_by_date'
  */
+
 /*
  * Defining Block from date value.
  */
-define('BLOCK_FROM_DATE_DEFAULT_INIT', NULL);
+define('BLOCK_BY_DATE_FROM_DATE_DEFAULT_INIT', NULL);
 /*
  * Defining Block to date value.
  */
-define('BLOCK_TO_DATE_DEFAULT_INIT', NULL);
+define('BLOCK_BY_DATE_TO_DATE_DEFAULT_INIT', NULL);
 /**
  * Implements hook_permission().
  */
@@ -28,13 +29,12 @@ function block_by_date_permission() {
 }
 
 /**
- * Implements hook_form_alter(&$form, &$form_state, $form_id).
- * 
+ * Implements hook_form_alter().
  */
 function block_by_date_form_alter(&$form, &$form_state, $form_id) {
   if (user_access('administer block dates') && ($form_id == 'block_admin_configure' || $form_id == 'block_add_block_form')) {
-
-    // Load statically cached block object used to display default from and to dates.
+    // Load statically cached block object used to display 
+    // default from and to dates.
     $block = block_load($form['module']['#value'], $form['delta']['#value']);
 
     // Adding date fieldset to the block configure page.
@@ -47,37 +47,37 @@ function block_by_date_form_alter(&$form, &$form_state, $form_id) {
       '#attached' => array(
         'js' => array(drupal_get_path('module', 'block_by_date') . '/block_by_date.js'),
       ),
-     );
+    );
     $form['visibility']['dates_between']['from_date'] = array(
       '#type' => module_exists('date_popup') ? 'date_popup' : 'date_select' ,
-      '#title' => t('From Date'), 
+      '#title' => t('From Date'),
       '#date_format' => 'Y-m-d H:i',
       '#date_year_range' => '-3:+3',
-      '#default_value' => isset($block->from_date) ? $block->from_date : variable_get('block_refresh_default_automatic_from_date', BLOCK_FROM_DATE_DEFAULT_INIT),
+      '#default_value' => isset($block->from_date) ? $block->from_date : variable_get('block_refresh_default_automatic_from_date', BLOCK_BY_DATE_FROM_DATE_DEFAULT_INIT),
       '#description' => t('If you specify only from date, the block will be visible on that date onwards.'),
-     );
+    );
     $form['visibility']['dates_between']['enable_end_date'] = array(
       '#type' => 'checkbox',
       '#title' => t('Collect an End Date'),
       '#default_value' => isset($block->to_date) ? TRUE : FALSE,
       '#description' => t('E.g., Allow this block to appear on September 15, and end on September 16.'),
-     );
-     $form['visibility']['dates_between']['to_date'] = array(
-       '#type' => module_exists('date_popup') ? 'date_popup' : 'date_select', 
-       '#title' => 'To Date',
-       '#date_format' => 'Y-m-d H:i', 
-       '#date_year_range' => '-3:+3',
-       '#default_value' => isset($block->to_date) ? $block->to_date : variable_get('block_refresh_default_automatic_from_date', BLOCK_TO_DATE_DEFAULT_INIT),
-       '#required' => (isset($form_state["values"]["enable_end_date"]) ? ($form_state["values"]["enable_end_date"] == TRUE ? TRUE : FALSE) : FALSE),
-       '#states' => array(
-         'visible' => array(
-           ':input[name="enable_end_date"]' => array('checked' => TRUE),
-         ),
-       ),
-     );
-    // Add validation handler
+    );
+    $form['visibility']['dates_between']['to_date'] = array(
+      '#type' => module_exists('date_popup') ? 'date_popup' : 'date_select',
+      '#title' => 'To Date',
+      '#date_format' => 'Y-m-d H:i',
+      '#date_year_range' => '-3:+3',
+      '#default_value' => isset($block->to_date) ? $block->to_date : variable_get('block_refresh_default_automatic_from_date', BLOCK_BY_DATE_TO_DATE_DEFAULT_INIT),
+      '#required' => (isset($form_state["values"]["enable_end_date"]) ? ($form_state["values"]["enable_end_date"] == TRUE ? TRUE : FALSE) : FALSE),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="enable_end_date"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+    // Add validation handler.
     $form['#validate'][] = 'block_by_date_alter_validate_settings';
-    // Add submission handler
+    // Add submission handler.
     $form['#submit'][] = 'block_by_date_form_submit';
   }
 }
@@ -111,11 +111,9 @@ function block_by_date_alter_validate_settings($form, &$form_state) {
  * Submit callback. Saves date settings per block.
  *
  * @see block_by_date_form_alter()
- *
  */
 function block_by_date_form_submit($form, &$form_state) {
-  if ($form_state['values']['form_id'] == 'block_admin_configure' || $form_state['values']['form_id'] == 'block_add_block_form') {
-    
+  if ($form_state['values']['form_id'] == 'block_admin_configure' || $form_state['values']['form_id'] == 'block_add_block_form') {    
     $dates = array();
     if ($form_state['values']['from_date'] != '') {
       $dates['from_date'] = $form_state['values']['from_date'];
@@ -147,8 +145,7 @@ function block_by_date_block_list_alter(&$blocks) {
   foreach ($blocks as $key => $block) {
     $current_date = date('Y-m-d H:i');
     $default_value_from = $block->from_date;
-    $default_value_to = $block->to_date;
-    
+    $default_value_to = $block->to_date;    
     if (!empty($default_value_from) && !empty($default_value_to)) {
       if ((strtotime($current_date) >= strtotime($default_value_from)) && (strtotime($current_date) <= strtotime($default_value_to))) {
         // Nothing. Block will be visible.
@@ -164,7 +161,7 @@ function block_by_date_block_list_alter(&$blocks) {
       }
       else {
         // Disabling block.
-         unset($blocks[$key]);
+        unset($blocks[$key]);
       }
     }
   }

@@ -34,7 +34,8 @@ function block_by_date_uninstall() {
 
 /**
  * Implements hook_schema_alter().
- * Other modules, such as block_class, i18n_block also 
+ *
+ * Other modules, such as block_class, i18n_block also
  * modify the block database table.
  */
 function block_by_date_schema_alter(&$schema) {

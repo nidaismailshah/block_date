@@ -1,7 +1,7 @@
 =======
 Description
 =======
-This module Enhances visibilty settings by adding date condition.
+This module Enhances visibility settings by adding date condition.
 
 =======
 Dependency

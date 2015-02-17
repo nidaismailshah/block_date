@@ -18,6 +18,18 @@ define('BLOCK_BY_DATE_FROM_DATE_DEFAULT_INIT', NULL);
  */
 define('BLOCK_BY_DATE_TO_DATE_DEFAULT_INIT', NULL);
 /**
+ * Implements hook_help().
+ */
+function block_by_date_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#block_by_date':
+      $output = '';
+      $output .= '<p>' . t('The block by date module provides date visibility settings to block. Adding a new block or updating existing block with new date settings is possible.So that based on the given from and to dates the block will be visible.') . '</p>';
+      $output .= '<p>' . t('You can display the block between given dates Or you can enter only from date means the block will be visible from given date.') . '</p>';
+      return $output;
+  }
+}
+/**
  * Implements hook_permission().
  */
 function block_by_date_permission() {

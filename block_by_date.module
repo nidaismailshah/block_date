@@ -106,10 +106,10 @@ function block_by_date_alter_validate_settings($form, &$form_state) {
   $to_date = '';
   if (!module_exists('date_popup')) {
     if (in_array("", $form_state['input']['from_date'])) {
-       form_set_error('from_date', t('The value input for from date is invalid. Please enter full date-time.'));
+      form_set_error('from_date', t('The value input for from date is invalid. Please enter full date-time.'));
     }
     if (in_array("", $form_state['input']['to_date'])) {
-       form_set_error('to_date', t('The value input for to date is invalid. Please enter full date-time.'));
+      form_set_error('to_date', t('The value input for to date is invalid. Please enter full date-time.'));
     }
   }
   if (isset($form_state['values']['from_date'])) {

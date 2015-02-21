@@ -18,12 +18,14 @@ It will work with date select or date popup.
 
 RECOMMENDED MODULES
 ------------
-Install date_popup sub module of date module if you want to used date popup field format.
+Install date_popup sub module of date module if you want to used 
+date popup field format.
 
 INSTALLATION
 ------------
 1. Check requirements section first.
-2. Enable the module. https://www.drupal.org/documentation/install/modules-themes/modules-7
+2. Enable the module.
+https://www.drupal.org/documentation/install/modules-themes/modules-7
 
 CONFIGURATION
 ------------

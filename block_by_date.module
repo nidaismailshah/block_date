@@ -115,7 +115,7 @@ function block_by_date_alter_validate_settings($form, &$form_state) {
         if ($date_value == '') {
           form_set_error('to_date', t('The value input for to date is invalid. Please enter full date-time.'));
         }
-      }    
+      }
     }
   }
   if (isset($form_state['values']['from_date'])) {

@@ -151,7 +151,7 @@ function block_by_date_alter_validate_settings($form, &$form_state) {
  * @see block_by_date_form_alter()
  */
 function block_by_date_form_submit($form, &$form_state) {
-  if ($form_state['values']['form_id'] == 'block_admin_configure' || 
+  if ($form_state['values']['form_id'] == 'block_admin_configure' ||
     $form_state['values']['form_id'] == 'block_add_block_form') {
     $dates = array();
     if ($form_state['values']['from_date'] != '') {

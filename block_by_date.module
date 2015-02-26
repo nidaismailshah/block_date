@@ -129,7 +129,8 @@ function block_by_date_alter_validate_settings($form, &$form_state) {
     }
   }
   if ($form_state['values']['module'] == 'block') {
-    // Throwing error empty to date error if 'Collect an End Date' checkbox enabled.
+    // Throwing error empty to date error if 'Collect an End Date'
+    // checkbox enabled.
     // Else if checking from date is lessa than to date or not.
     // Else if checking equal dates.
     if ($form_state['values']['enable_end_date'] == 1 && $to_date == variable_get('block_refresh_default_automatic_to_date', BLOCK_BY_DATE_TO_DATE_DEFAULT_INIT)) {
@@ -184,7 +185,8 @@ function block_by_date_block_list_alter(&$blocks) {
     $default_value_from = $block->from_date;
     $default_value_to = $block->to_date;
     if (!empty($default_value_from) && !empty($default_value_to)) {
-      if ((strtotime($current_date) >= strtotime($default_value_from)) && (strtotime($current_date) <= strtotime($default_value_to))) {
+      if ((strtotime($current_date) >= strtotime($default_value_from)) && 
+      (strtotime($current_date) <= strtotime($default_value_to))) {
         // Nothing. Block will be visible.
       }
       else {

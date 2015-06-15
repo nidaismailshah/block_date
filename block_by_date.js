@@ -20,11 +20,11 @@
         else {
           var from_date = $('#edit-from-date-year', context).val();
         }
-        if(from_date != '' || todate_checkbox != undefined) {
-          if(from_date != '' && todate_checkbox == undefined) {
+        if (from_date != '' || todate_checkbox != undefined) {
+          if (from_date != '' && todate_checkbox == undefined) {
             vals.push(Drupal.t('Restricted by From Date.'));
           }
-          else if((from_date != '' && todate_checkbox != undefined) || (from_date == '' && todate_checkbox != undefined)) {
+          else if ((from_date != '' && todate_checkbox != undefined) || (from_date == '' && todate_checkbox != undefined)) {
             vals.push(Drupal.t('Restricted by certain from and to dates'));
           }
         }

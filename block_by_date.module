@@ -183,7 +183,7 @@ function block_by_date_form_submit($form, &$form_state) {
 function block_by_date_block_list_alter(&$blocks) {
   foreach ($blocks as $key => $block) {
     $current_date = format_date(strtotime(date('Y-m-d H:i')), 'custom',
-    'Y-m-d H:i', date_default_timezone($check_user = TRUE));
+    'Y-m-d H:i', date_default_timezone());
     $default_value_from = $block->from_date;
     $default_value_to = $block->to_date;
     if (!empty($default_value_from) && !empty($default_value_to)) {

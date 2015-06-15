@@ -1,7 +1,6 @@
 name = Block by Date
 description = "Enhances block visibility settings by adding date conditions"
 core = 7.x
-
 package = Date/Time
 
 dependencies[] = block

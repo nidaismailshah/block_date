@@ -18,7 +18,7 @@ It will work with date select or date popup.
 
 RECOMMENDED MODULES
 ------------
-Install date_popup sub module of date module if you want to used 
+Install date_popup sub module of date module if you want to use 
 date popup field format.
 
 INSTALLATION

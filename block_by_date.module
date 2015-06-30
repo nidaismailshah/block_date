@@ -58,7 +58,7 @@ function block_by_date_form_alter(&$form, &$form_state, $form_id) {
       '#title' => t('From Date'),
       '#date_format' => 'Y-m-d H:i',
       '#date_year_range' => '-3:+3',
-      '#default_value' => isset($block->from_date) ? '',
+      '#default_value' => isset($block->from_date) ? $block->from_date : '',
       '#description' => t('If you specify only from date, the block will be visible from that date onwards.'),
     );
     $form['visibility']['dates_between']['enable_end_date'] = array(

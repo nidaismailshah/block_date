@@ -31,8 +31,8 @@
         else {
           var to_date = $('#edit-to-date-year', context).val();
         }
-        if(from_date != '' || todate_checkbox != undefined && to_date != '') {
-          if(from_date != '' && todate_checkbox == undefined && to_date == '') {
+        if (from_date != '' || todate_checkbox != undefined && to_date != '') {
+          if (from_date != '' && todate_checkbox == undefined && to_date == '') {
             vals.push(Drupal.t('Restricted by From Date.'));
           }
           else if (from_date != '' && todate_checkbox == undefined && to_date != '') {
@@ -41,7 +41,7 @@
           else if (from_date != '' && todate_checkbox == 1 && to_date == '') {
             vals.push(Drupal.t('Restricted by From Date.'));
           }
-          else if((from_date != '' && todate_checkbox != undefined && to_date != '') || (from_date == '' && todate_checkbox != undefined && to_date != '')) {
+          else if ((from_date != '' && todate_checkbox != undefined && to_date != '') || (from_date == '' && todate_checkbox != undefined && to_date != '')) {
             vals.push(Drupal.t('Restricted by certain from and to dates.'));
           }
         }

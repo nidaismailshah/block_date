@@ -166,7 +166,7 @@ function block_by_date_block_list_alter(&$blocks) {
     'Y-m-d H:i', date_default_timezone());
     $default_value_from = $block->from_date;
     $default_value_to = $block->to_date;
-    if (!empty($default_value_from))  {
+    if (!empty($default_value_from)) {
       if (strtotime($current_date) < strtotime($default_value_from)) {
         // Disabling block.
         unset($blocks[$key]);
@@ -182,6 +182,7 @@ function block_by_date_block_list_alter(&$blocks) {
       }
     }
     // If $default_value_to is not set, nothing will happen;
-    // If the first condition is met, and the second is not, block will be hidden.
+    // If the first condition is met, and the second is not,
+    // block will be hidden.
   }
 }

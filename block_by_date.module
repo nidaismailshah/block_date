@@ -145,7 +145,7 @@ function block_by_date_form_submit($form, &$form_state) {
     $form_state['values']['form_id'] == 'block_add_block_form') {
     $dates = array();
     $dates['from_date'] = isset($form_state['values']['from_date']) ? $form_state['values']['from_date'] : '';
-    $dates['to_date'] = isset($form_state['values']['enable_end_date'] == 1) ? $form_state['values']['to_date'] : '';
+    $dates['to_date'] = ($form_state['values']['enable_end_date'] == 1) ? $form_state['values']['to_date'] : '';
     db_update('block')
         ->fields($dates)
         ->condition('module', $form_state['values']['module'])
